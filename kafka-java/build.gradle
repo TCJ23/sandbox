@@ -30,5 +30,6 @@ dependencies {
 	compile('org.springframework.kafka:spring-kafka')
 	runtime('org.springframework.boot:spring-boot-devtools')
 	compileOnly('org.projectlombok:lombok')
+	testCompile('org.springframework.kafka:spring-kafka-test')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
