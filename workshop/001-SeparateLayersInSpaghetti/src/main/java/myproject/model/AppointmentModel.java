@@ -12,6 +12,7 @@ import java.util.Date;
 @Builder
 @EqualsAndHashCode
 public class AppointmentModel {
+    @Setter
     private Integer id;
 
     private Date termin;

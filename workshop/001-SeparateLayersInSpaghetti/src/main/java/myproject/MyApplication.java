@@ -70,7 +70,7 @@ public class MyApplication {
                 ) {
 
 
-                    try (ResultSet rs = s.executeQuery("SELECT * FROM [Kalendarz]")) {
+                        try (ResultSet rs = s.executeQuery("SELECT * FROM [Kalendarz]")) {
 
                         // przejrzymy wszystkie rekordy bazy danych szukając kandydatów
                         while (rs.next()) {
@@ -112,7 +112,7 @@ public class MyApplication {
                         if (Objects.equals(local_date, db_date) && Objects.equals(local_opis, db_opis) && Objects.equals(local_miejsce, db_miejsce))
                             continue;
 
-                        s.execute("UPDATE Kalendarz SET Termin=#" + local_date + "#, Opis='" + local_opis + "', Miejsce='" + local_miejsce + "' WHERE Id=" + local_id);
+                            s.execute("UPDATE Kalendarz SET Termin=#" + local_date + "#, Opis='" + local_opis + "', Miejsce='" + local_miejsce + "' WHERE Id=" + local_id);
 
                     }
 
