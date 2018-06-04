@@ -39,8 +39,8 @@ public class UtilsORM {
                 "VALUES (" + appointmentModel.getId() + ",#" + appointmentModel.getTermin() + "#, '" + appointmentModel.getOpis() + "', '" + appointmentModel.getMiejsce() + "')";
     }
 
-    public static String deleteSQL(AppointmentModel appointmentModel) {
-        return "DELETE FROM Kalendarz WHERE Id=" + appointmentModel.getId();
+    public static String deleteSQL(Integer id) {
+        return "DELETE FROM Kalendarz WHERE Id=" + id;
     }
 
     public static String updateSQL(AppointmentModel appointmentModel) {
