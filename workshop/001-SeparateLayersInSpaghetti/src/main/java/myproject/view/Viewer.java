@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.event.ActionEvent;
+import java.awt.*;
 import java.awt.event.ActionListener;
 import java.sql.Date;
 import java.time.LocalDate;
@@ -18,7 +18,7 @@ import java.time.LocalDate;
 public class Viewer {
 
     @Autowired
-    private Manager mgr;
+    private Manager manager;
 
     @Bean
     public JFrame jframe() {
@@ -39,56 +39,39 @@ public class Viewer {
         table.setFillsViewportHeight(true);
         frame.getContentPane().add(scrollPane);
 
-        // lambda action listener - wszystkie buttony do jednej metody, dodaj buttona, generyczna
-        JButton button = new JButton("Usun Rekord");
-        button.setBounds(432, 113, 130, 23);
-        frame.getContentPane().add(button);
-        button.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int selectedRow = table.getSelectedRow();
-                if (selectedRow < 0) return;
-                Integer appointmentID = (Integer) table.getValueAt(selectedRow, 0);
-                tableView.removeRow(selectedRow);//widok only
-                mgr.delete(appointmentID);
-            }
+
+        JButton jButton = createjButton("Usun Rekord", new Rectangle(432, 113, 130, 23), actionEvent -> {
+            int selectedRow = table.getSelectedRow();
+            if (selectedRow < 0) return;
+            Integer appointmentID = (Integer) table.getValueAt(selectedRow, 0);
+            tableView.removeRow(selectedRow);//widok only
+            manager.delete(appointmentID);
         });
+        frame.getContentPane().add(jButton);
 
-        JButton button_2 = new JButton("Dodaj Rekord");
-        button_2.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent arg0) {
-                AppointmentModel ap = AppointmentModel.builder()
-                        .miejsce("Miejsce")
-                        .opis("Opis")
-                        .termin(Date.valueOf(LocalDate.now()))
-                        .build();
-                Integer id = mgr.create(ap);
-                tableView.addRow(new Object[]{id, ap.getTermin(), ap.getOpis() + id, ap.getMiejsce()});
-            }
+        JButton jButton2 = createjButton("Dodaj Rekord", new Rectangle(432, 79, 130, 23), actionEvent -> {
+            AppointmentModel ap = AppointmentModel.builder()
+                    .miejsce("Miejsce")
+                    .opis("Opis")
+                    .termin(Date.valueOf(LocalDate.now()))
+                    .build();
+            Integer id = manager.create(ap);
+            tableView.addRow(new Object[]{id, ap.getTermin(), ap.getOpis() + id, ap.getMiejsce()});
         });
-        button_2.setBounds(432, 79, 130, 23);
-        frame.getContentPane().add(button_2);
+        frame.getContentPane().add(jButton2);
 
-        JButton button_4 = new JButton("SQL-Reload");
-        button_4.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-                // usuwamy wszystkie rekordy aby uniknąć zduplikowania wczytywanioa
-                int rows = tableView.getRowCount();
-                for (int i = 0; i < rows; i++) {
-                    tableView.removeRow(0);
-                }
-                mgr.getall().forEachRemaining(appointmentModel -> tableView.addRow(new Object[]{appointmentModel.getId(),
-                        appointmentModel.getTermin(),
-                        appointmentModel.getOpis(),
-                        appointmentModel.getMiejsce()}));
-
+        JButton jButton4 = createjButton("SQL-Reload", new Rectangle(432, 11, 130, 23), actionEvent -> {
+            int rows = tableView.getRowCount();
+            for (int i = 0; i < rows; i++) {
+                tableView.removeRow(0);
             }
-        });
+            manager.getall().forEachRemaining(appointmentModel -> tableView.addRow(new Object[]{appointmentModel.getId(),
+                    appointmentModel.getTermin(),
+                    appointmentModel.getOpis(),
+                    appointmentModel.getMiejsce()}));
 
-        button_4.setBounds(432, 11, 130, 23);
-        frame.getContentPane().add(button_4);
+        });
+        frame.getContentPane().add(jButton4);
 
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -111,4 +94,10 @@ public class Viewer {
         return frame;
     }
 
+    private JButton createjButton(String text, Rectangle rect, ActionListener listener) {
+        JButton button = new JButton(text);
+        button.setBounds(rect);
+        button.addActionListener(listener);
+        return button;
+    }
 }
